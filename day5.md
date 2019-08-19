@@ -83,26 +83,28 @@ webpack ./src/main.js -o ./dist/bundle.js
 1. 由于每次重新修改代码之后，都需要手动运行webpack打包的命令，比较麻烦，所以使用`webpack-dev-server`来实现代码实时打包编译，当修改代码之后，会自动进行打包构建。
 2. 运行`npm i webpack-dev-server -D`安装到开发依赖
 3. 安装完成之后，在命令行直接运行`webpack-dev-server`来进行打包，发现报错，此时需要借助于`package.json`文件中的指令，来进行运行`webpack-dev-server`命令，在`scripts`节点下新增`"dev": "webpack-dev-server"`指令，发现可以进行实时打包，但是dist目录下并没有生成`bundle.js`文件，这是因为`webpack-dev-server`将打包好的文件放在了内存中
+4. 注意： webpack-dev-server 这个工具，如果想要正常运行，要求，在本地项目中，必须安装 webpack。(运行webpack-dev-server的指令`npm run dev`)
  + 把`bundle.js`放在内存中的好处是：由于需要实时打包编译，所以放在内存中速度会非常快
  + 这个时候访问webpack-dev-server启动的`http://localhost:8080/`网站，发现是一个文件夹的面板，需要点击到src目录下，才能打开我们的index首页，此时引用不到bundle.js文件，需要修改index.html中script的src属性为:`<script src="../bundle.js"></script>`
  + 为了能在访问`http://localhost:8080/`的时候直接访问到index首页，可以使用`--contentBase src`指令来修改dev指令，指定启动的根目录：
  ```
- "dev": "webpack-dev-server --contentBase src"
+ //package.json下的dev指令，--open自动打开默认浏览器;--port 3000 设置端口号;--contentBase src 设置打开的根目录;--hot 启用热更新
+ "dev": "webpack-dev-server --open --port 3000 --contentBase src --hot"
  ```
  同时修改index页面中script的src属性为`<script src="bundle.js"></script>`
 
 ## 使用`html-webpack-plugin`插件配置启动页面
 由于使用`--contentBase`指令的过程比较繁琐，需要指定启动的目录，同时还需要修改index.html中script标签的src属性，所以推荐大家使用`html-webpack-plugin`插件配置启动页面.
-1. 运行`cnpm i html-webpack-plugin --save-dev`安装到开发依赖
+1. 运行`npm i html-webpack-plugin -D`安装到开发依赖
 2. 修改`webpack.config.js`配置文件如下：
 ```
     // 导入处理路径的模块
-    var path = require('path');
+    const path = require('path');
     // 导入自动生成HTMl文件的插件
-    var htmlWebpackPlugin = require('html-webpack-plugin');
+    const htmlWebpackPlugin = require('html-webpack-plugin');
 
     module.exports = {
-        entry: path.resolve(__dirname, 'src/js/main.js'), // 项目入口文件
+        entry: './src/main.js',//项目入口文件
         output: { // 配置输出选项
             path: path.resolve(__dirname, 'dist'), // 配置输出的路径
             filename: 'bundle.js' // 配置输出的文件名
