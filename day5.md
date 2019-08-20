@@ -39,7 +39,7 @@ webpack 是前端的一个项目构建工具，它是基于 Node.js 开发出来
    在cmd中运行`npm install --save-dev webpack-cli`安装到项目依赖中
 
 ## 初步使用webpack打包构建列表隔行变色案例
-1. 运行`npm init -y`初始化项目，使用npm管理项目中的依赖包
+1. 运行`npm init -y`初始化项目，使用npm管理项目中的依赖包（若文件夹为中文名，运行`npm init`初始化项目，然后在name时输入英文名称）
 2. 创建项目基本的目录结构
 3. 使用`npm i jquery -S`安装jquery类库
 4. 创建`main.js`并书写各行变色的代码逻辑：
@@ -109,6 +109,7 @@ webpack ./src/main.js -o ./dist/bundle.js
             path: path.resolve(__dirname, 'dist'), // 配置输出的路径
             filename: 'bundle.js' // 配置输出的文件名
         },
+		//html-webpack-plugin插件配置
         plugins:[ // 添加plugins节点配置插件
             new htmlWebpackPlugin({
                 template:path.resolve(__dirname, 'src/index.html'),//模板路径
@@ -117,11 +118,8 @@ webpack ./src/main.js -o ./dist/bundle.js
         ]
     }
 ```
-3. 修改`package.json`中`script`节点中的dev指令如下：
-```
-"dev": "webpack-dev-server"
-```
-4. 将index.html中script标签注释掉，因为`html-webpack-plugin`插件会自动把bundle.js注入到index.html页面中！
+
+3. 将index.html中script标签注释掉，因为`html-webpack-plugin`插件会自动把bundle.js注入到index.html页面中！
 
 ## 实现自动打开浏览器、热更新和配置浏览器的默认端口号
 **注意：热更新在JS中表现的不明显，可以从一会儿要讲到的CSS身上进行介绍说明！**
@@ -150,7 +148,7 @@ new webpack.HotModuleReplacementPlugin()
 ```
 
 ## 使用webpack打包css文件
-1. 运行`cnpm i style-loader css-loader --save-dev`
+1. 运行`npm i style-loader css-loader -D`
 2. 修改`webpack.config.js`这个配置文件：
 ```
 module: { // 用来配置第三方loader模块的
@@ -179,11 +177,18 @@ module: { // 用来配置第三方loader模块的
 1. 运行`cnpm i url-loader file-loader --save-dev`
 2. 在`webpack.config.js`中添加处理url路径的loader模块：
 ```
-{ test: /\.(png|jpg|gif)$/, use: 'url-loader' }
+{ test: /\.(png|jpg|gif)$/, use: 'url-loader' },// 处理 图片路径的 loader
 ```
 3. 可以通过`limit`指定进行base64编码的图片大小；只有小于指定字节（byte）的图片才会进行base64编码：
 ```
-{ test: /\.(png|jpg|gif)$/, use: 'url-loader?limit=43960' },
+{ test: /\.(png|jpg|gif)$/, use: 'url-loader?limit=43960' },// 处理 图片路径的 loader
+```
+
+## 使用webpack处理字体图标中的路径
+1. 运行`npm i npm bootstrap -S`
+在`webpack.config.js`中添加处理url路径的loader模块：
+```
+{ test: /\.(ttf|eot|svg|woff|woff2)$/, use: 'url-loader' }, // 处理 字体文件的 loader
 ```
 
 ## 使用babel处理高级JS语法
